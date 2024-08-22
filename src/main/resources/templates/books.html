@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Liste des Livres</title>
+</head>
+<body>
+<h1>Liste des Livres</h1>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Nom</th>
+        <th>Auteur</th>
+        <th>Genre</th>
+        <th>Prix</th>
+        <th>Date de publication</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="book : ${books}">
+        <td th:text="${book.id}"></td>
+        <td th:text="${book.name}"></td>
+        <td th:text="${book.author}"></td>
+        <td th:text="${book.genre}"></td>
+        <td th:text="${book.price}"></td>
+        <td th:text="${book.published_date}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<h2>Ajouter un Livre</h2>
+<form action="#" th:action="@{/addOne}" th:object="${book}" method="post">
+    <label for="name">Nom du Livre:</label>
+    <input type="text" id="name" th:field="*{name}" /><br/>
+
+    <label for="author">Auteur:</label>
+    <input type="text" id="author" th:field="*{author}" /><br/>
+
+    <label for="published_date">Date de Publication:</label>
+    <input type="date" id="published_date" th:field="*{published_date}" /><br/>
+
+    <label for="price">Prix:</label>
+    <input type="number" id="price" th:field="*{price}" /><br/>
+
+    <label for="genre">Genre:</label>
+    <input type="text" id="genre" th:field="*{genre}" /><br/>
+
+    <button type="submit">Ajouter</button>
+</form>
+</body>
+</html>

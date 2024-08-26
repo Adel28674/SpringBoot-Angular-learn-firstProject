@@ -1,6 +1,6 @@
 package com.example.firstProject.Controller;
 
-import com.example.firstProject.AuthRequest;
+import com.example.firstProject.SerializationClass.AuthRequest;
 import com.example.firstProject.Model.UserEntity;
 import com.example.firstProject.Service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -36,7 +36,7 @@ public class UserController {
     @PostMapping("/addUser")
     public ResponseEntity<String> addUser(@RequestBody UserEntity userEntity){
         userEntity.setPassword(userService.cryptPassword(userEntity.getPassword()));
-        userService.addUser(userEntity);
+        userService.register(userEntity);
         return ResponseEntity.ok("the user " + userEntity.getUsername() + " have been added");
     }
 

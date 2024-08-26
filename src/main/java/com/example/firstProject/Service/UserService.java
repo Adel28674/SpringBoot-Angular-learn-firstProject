@@ -34,10 +34,6 @@ public class UserService {
     }
 
 
-    public void addUser(UserEntity userEntity){
-        userRepository.save(userEntity);
-    }
-
 
     public  void addUsers(List<UserEntity> listUsers){
         userRepository.saveAll(listUsers);

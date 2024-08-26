@@ -1,4 +1,4 @@
-package com.example.firstProject;
+package com.example.firstProject.SerializationClass;
 
 import lombok.Getter;
 import lombok.Setter;

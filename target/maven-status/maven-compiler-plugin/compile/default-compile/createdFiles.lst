@@ -6,6 +6,7 @@ com\example\firstProject\Interface\BookRepository.class
 com\example\firstProject\Model\UserEntity.class
 com\example\firstProject\Service\SearchService.class
 com\example\firstProject\FirstProjectApplication.class
+com\example\firstProject\Util\JwtUtil.class
 com\example\firstProject\Service\UserService.class
 com\example\firstProject\Controller\SearchController.class
 com\example\firstProject\Interface\UserRepository.class

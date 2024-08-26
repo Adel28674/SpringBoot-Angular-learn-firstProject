@@ -1,13 +1,11 @@
 package com.example.firstProject.Service;
 
-import com.example.firstProject.Interface.BookRepository;
 import com.example.firstProject.Interface.UserRepository;
-import com.example.firstProject.Model.BookEntity;
 import com.example.firstProject.Model.UserEntity;
+import com.example.firstProject.Util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,8 +18,14 @@ public class UserService {
     @Autowired
     private final UserRepository userRepository;
 
+    @Autowired
+    private final BCryptPasswordEncoder bc ;
 
-    public UserEntity getUserById(Long userId){
+    @Autowired
+    private final JwtUtil jwtUtil;
+
+
+  public UserEntity getUserById(Long userId){
         return userRepository.findById(userId).orElseThrow(()->new RuntimeException(userId  +  " not found"));
     }
 
@@ -55,6 +59,28 @@ public class UserService {
         userRepository.deleteAll();
     }
 
+    public String cryptPassword(String password){
+      return bc.encode(password);
+    }
 
+  public String authentificate(String username, String password) {
+    Optional<UserEntity> userOptional = userRepository.findByUsername(username);
 
+    if (userOptional.isPresent() && userOptional.get().getPassword().equals(password)) {
+      return jwtUtil.generateToken(userOptional.get());
+    } else {
+      throw new RuntimeException("Invalid credentials");
+    }
+  }
+
+  public UserEntity register(UserEntity user) {
+    if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+      throw new RuntimeException("User already exists");
+    }
+    return userRepository.save(user);
+  }
+
+  public String getUsernameFromToken(String token) {
+    return jwtUtil.extractUsername(token);
+  }
 }

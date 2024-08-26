@@ -1,13 +1,11 @@
 package com.example.firstProject.Controller;
 
-import com.example.firstProject.Model.BookEntity;
+import com.example.firstProject.AuthRequest;
 import com.example.firstProject.Model.UserEntity;
 import com.example.firstProject.Service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,12 +35,16 @@ public class UserController {
 
     @PostMapping("/addUser")
     public ResponseEntity<String> addUser(@RequestBody UserEntity userEntity){
+        userEntity.setPassword(userService.cryptPassword(userEntity.getPassword()));
         userService.addUser(userEntity);
         return ResponseEntity.ok("the user " + userEntity.getUsername() + " have been added");
     }
 
     @PostMapping("/addUsers")
     public ResponseEntity<String> addUsers(@RequestBody List<UserEntity> usersEntity){
+        usersEntity.forEach(userEntity -> {
+          userEntity.setPassword(userService.cryptPassword(userEntity.getPassword()));
+        });
         userService.addUsers(usersEntity);
         return ResponseEntity.ok("the users have been added");
     }
@@ -70,6 +72,16 @@ public class UserController {
     public ResponseEntity<String> deleterAllUser(){
         userService.deleteAll();
         return ResponseEntity.ok("");
+    }
+
+    @PostMapping("/authentification")
+    public ResponseEntity<String> authentification(@RequestBody AuthRequest authRequest){
+      return ResponseEntity.ok(userService.authentificate(authRequest.getUsername(), authRequest.getPassword()));
+    }
+
+    @PostMapping("/getUsernameFromToken/{token}")
+    public ResponseEntity<String> getUsernameFromToken(@PathVariable String token){
+      return ResponseEntity.ok(userService.getUsernameFromToken(token));
     }
 
 

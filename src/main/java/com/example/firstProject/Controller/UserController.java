@@ -1,10 +1,14 @@
 package com.example.firstProject.Controller;
 
+import com.example.firstProject.Exception.UserAlreadyExistException;
 import com.example.firstProject.SerializationClass.AuthRequest;
 import com.example.firstProject.Model.UserEntity;
 import com.example.firstProject.Service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +27,11 @@ public class UserController {
         return ResponseEntity.ok("Welcome");
     }
 
+  @GetMapping("/test-filtre")
+  public ResponseEntity<String> test(){
+    throw new RuntimeException();
+  }
+
     @GetMapping("/{userId}")
     public ResponseEntity<UserEntity> getUserById(@PathVariable Long userId){
         return ResponseEntity.ok(userService.getUserById(userId));
@@ -36,17 +45,21 @@ public class UserController {
     @PostMapping("/addUser")
     public ResponseEntity<String> addUser(@RequestBody UserEntity userEntity){
         userEntity.setPassword(userService.cryptPassword(userEntity.getPassword()));
-        userService.register(userEntity);
+        try{
+          userService.register(userEntity);
+        }catch (RuntimeException e){
+          throw new UserAlreadyExistException(userEntity.getUsername());
+        }
         return ResponseEntity.ok("the user " + userEntity.getUsername() + " have been added");
     }
 
     @PostMapping("/addUsers")
     public ResponseEntity<String> addUsers(@RequestBody List<UserEntity> usersEntity){
-        usersEntity.forEach(userEntity -> {
-          userEntity.setPassword(userService.cryptPassword(userEntity.getPassword()));
-        });
-        userService.addUsers(usersEntity);
-        return ResponseEntity.ok("the users have been added");
+      usersEntity.forEach(userEntity -> {
+        userEntity.setPassword(userService.cryptPassword(userEntity.getPassword()));
+      });
+      userService.addUsers(usersEntity);
+      return ResponseEntity.ok("the users have been added");
     }
 
     @DeleteMapping("/deleteUser/{userId}")
@@ -83,6 +96,8 @@ public class UserController {
     public ResponseEntity<String> getUsernameFromToken(@PathVariable String token){
       return ResponseEntity.ok(userService.getUsernameFromToken(token));
     }
+
+
 
 
 

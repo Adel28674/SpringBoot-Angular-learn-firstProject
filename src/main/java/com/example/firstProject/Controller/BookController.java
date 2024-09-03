@@ -27,12 +27,6 @@ public class BookController {
         return "books";
     }
 
-//    @GetMapping("/redirectToBooks")
-//    public String redirectToBooks(Model model) {
-//        return "redirect:/";
-//
-//    }
-
     @GetMapping("/book/{bookId}")
     public ResponseEntity<BookEntity> getBook(@PathVariable Long bookId){
         return bookService.getBookById(bookId)
@@ -44,12 +38,6 @@ public class BookController {
     public List<BookEntity> getAllBooks(){
         return bookService.getAllBooks();
     }
-
-
-//    @PostMapping("/addOne")
-//    public ResponseEntity<BookEntity> addOneBook(@RequestBody BookEntity bookEntity){
-//        return ResponseEntity.ok(bookService.addOneBook(bookEntity));
-//    }
 
 
     @PostMapping("/addOne")

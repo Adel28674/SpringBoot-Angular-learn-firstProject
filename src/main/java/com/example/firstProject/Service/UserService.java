@@ -1,5 +1,7 @@
 package com.example.firstProject.Service;
 
+import com.example.firstProject.Exception.UserAlreadyExistException;
+import com.example.firstProject.Exception.UserDoesNotExistException;
 import com.example.firstProject.Interface.UserRepository;
 import com.example.firstProject.Model.UserEntity;
 import com.example.firstProject.Util.JwtUtil;
@@ -26,14 +28,12 @@ public class UserService {
 
 
   public UserEntity getUserById(Long userId){
-        return userRepository.findById(userId).orElseThrow(()->new RuntimeException(userId  +  " not found"));
+        return userRepository.findById(userId).orElseThrow(()->new UserDoesNotExistException(userId));
     }
 
     public List<UserEntity> getAllUsers(){
         return userRepository.findAll();
     }
-
-
 
     public  void addUsers(List<UserEntity> listUsers){
         userRepository.saveAll(listUsers);
@@ -71,7 +71,7 @@ public class UserService {
 
   public UserEntity register(UserEntity user) {
     if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-      throw new RuntimeException("User already exists");
+      throw new UserAlreadyExistException(user.getUsername());
     }
     return userRepository.save(user);
   }
